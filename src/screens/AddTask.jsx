@@ -24,7 +24,7 @@ export default function AgendaScreen({ navigation, route }) {
       setItems(newItems);
       setTaskName('');
 
-      navigation.navigate('Stupify!', { updatedItems: newItems });
+      navigation.navigate('Stupify', { updatedItems: newItems });
     } else {
       Alert.alert('Please enter task and select a date');
     }
@@ -49,7 +49,6 @@ export default function AgendaScreen({ navigation, route }) {
         renderItem={(item, index) => (
           <View style={styles.item} key={index}>
             <Text>{item.name}</Text>
-            <Button title="Remove" onPress={() => removeTask(selectedDate, index)} />
           </View>
         )}
         rowHasChanged={(r1, r2) => r1.name !== r2.name}

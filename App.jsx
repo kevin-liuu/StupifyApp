@@ -25,7 +25,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Stupify!" component={HomeScreen}/>
+        <Stack.Screen name="Stupify" component={HomeScreen}/>
         <Stack.Screen name="Add Task" component={AddTaskScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
