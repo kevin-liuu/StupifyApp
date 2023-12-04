@@ -1,25 +1,69 @@
-import React from 'react';
-import {SafeAreaView} from "react-native-safe-area-context";
-import {
-    StyleSheet,
-    Pressable,
-    View,
-    Text,
-    ScrollView,
-    TextInput,
-    Button
-  } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, Text, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
+export default function HomeScreen({ navigation, route }) {
+  const [tasks, setTasks] = useState({});
+  const isFocused = useIsFocused();
 
-export default function HomeScreen({navigation}){
+  useEffect(() => {
+    if (isFocused && route.params?.updatedItems) {
+      setTasks(route.params.updatedItems);
+    }
+  }, [isFocused, route.params?.updatedItems]);
 
-    return(
-        
-            <SafeAreaView>
-                <Text>Task List</Text>
-                <Button
-                title="Add Task"
-                onPress={() => navigation.navigate('Add Task')}/>
-            </SafeAreaView>
-    );
+  const removeTask = (date, index) => {
+    const newTasks = { ...tasks };
+    newTasks[date].splice(index, 1);
+    if (newTasks[date].length === 0) {
+      delete newTasks[date];
+    }
+    setTasks(newTasks);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text>Task List</Text>
+      {Object.keys(tasks).map(date => (
+        tasks[date].map((task, index) => (
+          <View key={index} style={styles.taskItem}>
+            <Text style={styles.taskText}>{date}: {task.name}</Text>
+            <TouchableOpacity onPress={() => removeTask(date, index)} style={styles.removeButton}>
+              <Text>Remove</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      ))}
+      <Button
+        title="Add Task"
+        onPress={() => navigation.navigate('Add Task', { updatedItems: tasks })}
+      />
+    </SafeAreaView>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  taskItem: {
+    backgroundColor: 'lightgray',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  taskText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  removeButton: {
+    backgroundColor: '#ff4d4d',
+    padding: 5,
+    borderRadius: 5,
+  },
+});
