@@ -1,48 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Alert, Text, TouchableOpacity } from 'react-native';
+//IMPORTS
+import React, { useState } from 'react';
+import { StyleSheet, View, TextInput, Button, Alert, Text } from 'react-native';
+//React Native Calendars package:  https://wix.github.io/react-native-calendars/docs/Intro
 import { Agenda } from 'react-native-calendars';
+//React Native Modal Datetime Picker: https://github.com/mmazzarolo/react-native-modal-datetime-picker
 import { DateTimePickerModal } from 'react-native-modal-datetime-picker';
+//React Native Paper: https://github.com/callstack/react-native-paper
 import { Card } from 'react-native-paper';
 
-export default function AgendaScreen() {
-  const [items, setItems] = useState({});
+export default function AgendaScreen({ navigation, route }) {
+  const [items, setItems] = useState(route.params?.updatedItems || {});
   const [taskName, setTaskName] = useState('');
+  //Set initial state to current date as string
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
   const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
   const [selectedStartTime, setSelectedStartTime] = useState('');
   const [selectedEndTime, setSelectedEndTime] = useState('');
 
+
   const addTask = () => {
-    if (
-      taskName.trim () !== '' &&
-      selectedDate !== '' && 
-      selectedStartTime !== '' && 
-      selectedEndTime !== '') {
-        const dateString = selectedDate;
+    if (taskName.trim() !== '' && 
+    selectedDate.trim() !== '' &&
+    selectedStartTime.trim() !== '' &&
+    selectedEndTime.trim() !== '') {
+      const newTask = {
+        name: taskName,
+        date: selectedDate,
+        startTime: selectedStartTime,
+        endTime: selectedEndTime,
+        height: Math.max(50, Math.floor(Math.random() * 150)),
+      };
 
-        const newTask = {
-          name: taskName,
-          date: selectedDate,
-          startTime: selectedStartTime,
-          endTime: selectedEndTime,
-          height: Math.max(50, Math.floor(Math.random() * 150)),
-        };
+      const newItems = { ...items };
 
-        const newItems = { ...items };
+      if (!newItems[selectedDate]) {
+        newItems[selectedDate] = [];
+      }
 
-        if (!newItems[dateString]) {
-          newItems[dateString] = [];
-        }
+      newItems[selectedDate].push(newTask);
+      setItems(newItems);
+      setTaskName('');
+      setSelectedStartTime('');
+      setSelectedEndTime('');
 
-        newItems[dateString].push(newTask);
-        setItems(newItems);
-        setTaskName('');
-        setSelectedStartTime('');
-        setSelectedEndTime('');
-     }
-    else {
-      Alert.alert('Please enter task, select date and set a time.');
+      navigation.navigate('Stupify', { updatedItems: newItems });
+    } else {
+      Alert.alert('Please enter task, select a date and set a time.');
     }
   };
 
@@ -51,7 +55,7 @@ export default function AgendaScreen() {
   };
 
   const hideStartTimePicker = () => {
-    setStartTimePickerVisibility(false);
+    setStartTimePickerVisibility(false)
   };
 
   const showEndTimePicker = () => {
@@ -72,29 +76,37 @@ export default function AgendaScreen() {
     hideEndTimePicker();
   };
 
+  const removeTask = (date, index) => {
+    const newItems = { ...items };
+    newItems[date].splice(index, 1);
+    if (newItems[date].length === 0) {
+      delete newItems[date];
+    }
+    setItems(newItems);
+    navigation.navigate('Stupify', { updatedItems: newItems });
+  };
+
   return (
     <View style={styles.container}>
-      <Text>Please select a day</Text>
+      <Text>Select a day</Text>
       <Agenda
         items={items}
         onDayPress={(day) => setSelectedDate(day.dateString)}
-        renderItem={(item) => (
-            <Card style={styles.margin}>
-              <Card.Content>
-                <View style={styles.spacing}>
-                  <Text>{item.name}</Text>
-                  <Text>{item.startTime} - {item.endTime}</Text>
-                </View>
-              </Card.Content>
-            </Card>
+        renderItem={(item, index) => (
+          <Card style={styles.margin}>
+            <Card.Content>
+              <View style={[styles.item, styles.spacing]} key={index}>
+                <Text>{item.name}</Text>
+                <Text>{item.startTime} - {item.endTime}</Text>
+              </View>
+            </Card.Content>
+          </Card>
         )}
-      
         rowHasChanged={(r1, r2) => r1.name !== r2.name}
         showClosingKnob={true}
       />
-      
       <TextInput
-        placeholder="Enter task name"
+        placeholder="Enter Task Description"
         value={taskName}
         onChangeText={(text) => setTaskName(text)}
         style={styles.input}
@@ -111,6 +123,7 @@ export default function AgendaScreen() {
           />
           <Text>Start Time: {selectedStartTime}</Text>
         </View>
+
         <View style={styles.timePicker}>
           <Button title="Select End Time" onPress={showEndTimePicker} />
           <DateTimePickerModal
@@ -122,7 +135,8 @@ export default function AgendaScreen() {
           <Text>End Time: {selectedEndTime}</Text>
         </View>
       </View>
-      <Button title="Add Task" onPress={addTask} />
+
+      <Button title="+" onPress={addTask} />
     </View>
   );
 }
@@ -139,14 +153,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderRadius: 5
   },
   item: {
-    backgroundColor: 'white',
-    flex: 1,
-    borderRadius: 5,
+    backgroundColor: 'lightgray',
     padding: 10,
-    marginRight: 10,
-    marginTop: 17,
+    borderRadius: 5,
+    marginVertical: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   timePickerContainer: {
     flexDirection: 'row',
@@ -165,5 +181,5 @@ const styles = StyleSheet.create({
   margin: {
     marginRight: 15,
     marginTop: 17,
-  },
+  }
 });
