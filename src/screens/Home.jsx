@@ -23,7 +23,9 @@ export default function HomeScreen({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Task List</Text>
+      <Text style={{marginBottom:15, 
+      fontSize: 16,
+      }}>My Task List:</Text>
       {Object.keys(tasks).map(date => (
         tasks[date].map((task, index) => (
           <View key={index} style={styles.taskItem}>
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
     padding: 10,
     borderRadius: 5,
+    marginBottom: 15,
     marginVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
