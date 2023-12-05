@@ -1,10 +1,13 @@
+//IMPORTS
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Button, Alert, Text } from 'react-native';
+//React Native Calendars package:  https://wix.github.io/react-native-calendars/docs/Intro
 import { Agenda } from 'react-native-calendars';
 
 export default function AgendaScreen({ navigation, route }) {
   const [items, setItems] = useState(route.params?.updatedItems || {});
   const [taskName, setTaskName] = useState('');
+  //Set initial state to current date as string
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
 
   const addTask = () => {
@@ -42,7 +45,7 @@ export default function AgendaScreen({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text>Please select a day</Text>
+      <Text>Select a day</Text>
       <Agenda
         items={items}
         onDayPress={(day) => setSelectedDate(day.dateString)}
@@ -55,12 +58,12 @@ export default function AgendaScreen({ navigation, route }) {
         showClosingKnob={true}
       />
       <TextInput
-        placeholder="Enter task name"
+        placeholder="Enter Task Description"
         value={taskName}
         onChangeText={(text) => setTaskName(text)}
         style={styles.input}
       />
-      <Button title="Add Task" onPress={addTask} />
+      <Button title="+" onPress={addTask} />
     </View>
   );
 }
@@ -77,6 +80,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderRadius: 5
   },
   item: {
     backgroundColor: 'lightgray',
