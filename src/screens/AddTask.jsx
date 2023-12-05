@@ -23,6 +23,7 @@ export default function AgendaScreen({ navigation, route }) {
     selectedDate.trim() !== '' &&
     selectedStartTime.trim() !== '' &&
     selectedEndTime.trim() !== '') {
+
       const newTask = {
         name: taskName,
         date: selectedDate,
@@ -42,6 +43,7 @@ export default function AgendaScreen({ navigation, route }) {
       setTaskName('');
       setSelectedStartTime('');
       setSelectedEndTime('');
+
 
       navigation.navigate('Stupify', { updatedItems: newItems });
     } else {
@@ -92,6 +94,7 @@ export default function AgendaScreen({ navigation, route }) {
         items={items}
         onDayPress={(day) => setSelectedDate(day.dateString)}
         renderItem={(item, index) => (
+
           <Card style={styles.margin}>
             <Card.Content>
               <View style={[styles.item, styles.spacing]} key={index}>
@@ -100,6 +103,7 @@ export default function AgendaScreen({ navigation, route }) {
               </View>
             </Card.Content>
           </Card>
+
         )}
         rowHasChanged={(r1, r2) => r1.name !== r2.name}
         showClosingKnob={true}
@@ -134,6 +138,7 @@ export default function AgendaScreen({ navigation, route }) {
           <Text>End Time: {selectedEndTime}</Text>
         </View>
       </View>
+
 
       <Button title="+" onPress={addTask} />
     </View>
@@ -180,5 +185,6 @@ const styles = StyleSheet.create({
   margin: {
     marginRight: 15,
     marginTop: 17,
+
   }
 });

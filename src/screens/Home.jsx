@@ -5,6 +5,7 @@ import { useIsFocused } from '@react-navigation/native';
 export default function HomeScreen({ navigation, route }) {
   const [tasks, setTasks] = useState({});
   const isFocused = useIsFocused();
+
   
   useEffect(() => {
     if (isFocused && route.params?.updatedItems) {
@@ -30,9 +31,11 @@ export default function HomeScreen({ navigation, route }) {
         tasks[date].map((task, index) => (
           <View key={index} style={styles.taskItem}>
             <Text style={styles.taskText}>{date}: {task.name}</Text>
+
             <View>
               <Text>{task.startTime} - {task.endTime}</Text>
             </View>
+
             <TouchableOpacity onPress={() => removeTask(date, index)} style={styles.removeButton}>
               <Text>Remove</Text>
             </TouchableOpacity>
