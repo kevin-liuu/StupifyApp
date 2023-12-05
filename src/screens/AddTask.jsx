@@ -18,7 +18,6 @@ export default function AgendaScreen({ navigation, route }) {
   const [selectedStartTime, setSelectedStartTime] = useState('');
   const [selectedEndTime, setSelectedEndTime] = useState('');
 
-
   const addTask = () => {
     if (taskName.trim() !== '' && 
     selectedDate.trim() !== '' &&
